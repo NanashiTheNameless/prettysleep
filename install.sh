@@ -152,11 +152,11 @@ installlatest() {
 
   # Prefer axel, then curl, then wget
   if command -v axel >/dev/null 2>&1; then
-    axel -q -o "$target" "$url"
+    axel -H 'DNT: 1' -H 'Sec-GPC: 1' -q -o "$target" "$url"
   elif command -v curl >/dev/null 2>&1; then
-    curl -fsSL -o "$target" "$url"
+    curl -H 'DNT: 1' -H 'Sec-GPC: 1' -fsSL -o "$target" "$url"
   elif command -v wget >/dev/null 2>&1; then
-    wget -q -O "$target" "$url"
+    wget -H 'DNT: 1' -H 'Sec-GPC: 1' -q -O "$target" "$url"
   else
     echo "Need one of: axel, curl, or wget." >&2
     exit 1
