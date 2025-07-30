@@ -101,11 +101,12 @@ fi
 check_and_add_to_file() {
   local file=$1
   # Detect an existing PATH entry referencing $DIR; otherwise append one
-  if grep -q "export PATH=.*$DIR" "$file"; then
+  if cat $file | grep PATH | grep -Fq "$DIR"; then
     echo "$DIR is already in the PATH in $file"
   else
     echo "Adding $DIR to $file"
-    echo "\nexport PATH=\"$DIR:\$PATH\"" >> "$file"
+    echo ""
+    echo "export PATH=\"$DIR:\$PATH\"" >> "$file"
   fi
 }
 
