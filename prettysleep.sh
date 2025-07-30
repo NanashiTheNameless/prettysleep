@@ -128,7 +128,7 @@ input="${input//[[:space:]]/}"
 
 # Basic usage check.
 if [[ -z "$input" ]]; then
-  echo 'Usage: prettysleep <duration>  (try: 90s, 2m30s, 1h2s, 1d4h, "1d 2h 10m")' >&2
+  echo 'Usage: prettysleep [--update] <duration>  (try: 90s, 2m30s, 1h2s, 1d4h, "1d 2h 10m")' >&2
   exit 1
 fi
 
