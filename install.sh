@@ -75,6 +75,8 @@ If they do not do so, their license ends immediately.
 This Work is provided “as is”, without warranty of any kind, express or implied.
 The Licensor will not be liable to anyone for any damages related to the Work or this license,
 under any kind of legal claim as far as the law allows.
+
+
 LICENSE
 
 # Confirm license agreement if --agree was not supplied
