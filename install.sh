@@ -77,7 +77,7 @@ The Licensor will not be liable to anyone for any damages related to the Work or
 under any kind of legal claim as far as the law allows.
 LICENSE
 
-# Confirm license agreement if --agree was not supplied
+# Confirm license agreement if --agree or --accept was not supplied
 if [[ $AGREE_FLAG -eq 1 ]]; then
   echo ""
   echo "Agreement provided via \"--agree\" or \"--accept.\""
