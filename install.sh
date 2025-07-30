@@ -80,7 +80,7 @@ LICENSE
 # Confirm license agreement if --agree was not supplied
 if [[ $AGREE_FLAG -eq 1 ]]; then
   echo ""
-  echo "Agreement provided via --agree."
+  echo "Agreement provided via \"--agree\" or \"--accept.\""
   echo ""
 else
   # Read from /dev/tty when available to avoid piping issues
