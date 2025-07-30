@@ -67,7 +67,7 @@
 for __arg in "$@"; do
   if [[ "$__arg" == "-h" || "$__arg" == "--help" ]]; then
     cat <<'EOF'
-Usage: prettysleep [--update] <duration>
+Usage: prettysleep [--help] [--update] <duration>
 
 Accepts chained duration segments (with or without spaces):
   90s
@@ -128,7 +128,7 @@ input="${input//[[:space:]]/}"
 
 # Basic usage check.
 if [[ -z "$input" ]]; then
-  echo 'Usage: prettysleep [--update] <duration>  (try: 90s, 2m30s, 1h2s, 1d4h, "1d 2h 10m")' >&2
+  echo 'Usage: prettysleep [--help] [--update] <duration>  (try: 90s, 2m30s, 1h2s, 1d4h, "1d 2h 10m")' >&2
   exit 1
 fi
 
