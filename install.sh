@@ -76,12 +76,12 @@ This Work is provided “as is”, without warranty of any kind, express or impl
 The Licensor will not be liable to anyone for any damages related to the Work or this license,
 under any kind of legal claim as far as the law allows.
 
-
 LICENSE
 
 # Confirm license agreement if --agree was not supplied
 if [[ $AGREE_FLAG -eq 1 ]]; then
   echo "Agreement provided via --agree."
+  echo ""
 else
   # Read from /dev/tty when available to avoid piping issues
   if [ -t 0 ] && [ -r /dev/tty ]; then
