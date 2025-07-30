@@ -105,7 +105,8 @@ check_and_add_to_file() {
     echo "$DIR is already in the PATH in $file"
   else
     echo "Adding $DIR to $file"
-    echo "\nexport PATH=\"$DIR:\$PATH\"" >> "$file"
+    echo ""
+    echo "export PATH=\"$DIR:\$PATH\"" >> "$file"
   fi
 }
 
