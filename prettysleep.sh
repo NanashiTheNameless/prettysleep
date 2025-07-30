@@ -67,7 +67,7 @@
 for __arg in "$@"; do
   if [[ "$__arg" == "-h" || "$__arg" == "--help" ]]; then
     cat <<'EOF'
-Usage: prettysleep <duration>
+Usage: prettysleep [--update] <duration>
 
 Accepts chained duration segments (with or without spaces):
   90s
@@ -102,6 +102,25 @@ EOF
     exit 0
   fi
 done
+
+# Check for --update option among the arguments
+for arg in "$@"; do
+  if [ "$arg" == "--update" ]; then
+    update="true"
+    # Check if curl is installed
+    command -v curl >/dev/null 2>&1 || { echo >&2 "curl is required but it's not installed. Aborting." ; exit 1 ; }
+    curl -H 'DNT: 1' -H 'Sec-GPC: 1' -sL https://github.com/NanashiTheNameless/prettysleep/raw/refs/heads/main/install.sh -o install.sh ;
+    chmod +x install.sh ;
+    bash install.sh --agree ;
+    command rm install.sh
+    break
+  fi
+done
+
+# Exit after completing --update
+if [ "$update" = true ]; then
+    exit 0
+fi
 
 # Join all arguments, then strip all whitespace to allow inputs like "1d 2h".
 input="$*"
