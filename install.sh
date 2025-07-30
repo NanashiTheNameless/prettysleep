@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
+# Prettysleep installer
+# - Installs to $HOME/.local/bin (override via DIR)
+# - Requires accepting OQL v1.2 (or pass --agree)
+# - Removes older installs, downloads latest, sets execute bit
+# - Ensures $DIR is added to PATH in common shell init files
 
-# Set directory to install prettysleep to
+# Installation target directory
 DIR="$HOME/.local/bin"
 
-# Parse flags (currently only --agree)
+# Parse flags (only --agree is recognized)
 AGREE_FLAG=0
 for __arg in "$@"; do
   if [[ "$__arg" == "--agree" ]]; then
@@ -11,7 +16,7 @@ for __arg in "$@"; do
   fi
 done
 
-# --- echo the license --------------------------------------------------------
+# Show license text (do not edit)
 cat <<'LICENSE'
 # 🏳️‍🌈 Opinionated Queer License v1.2
 
@@ -72,11 +77,11 @@ The Licensor will not be liable to anyone for any damages related to the Work or
 under any kind of legal claim as far as the law allows.
 LICENSE
 
-# --- prompt for agreement (unless --agree is provided) -----------------------
+# Confirm license agreement if --agree was not supplied
 if [[ $AGREE_FLAG -eq 1 ]]; then
   echo "Agreement provided via --agree."
 else
-  # Try to prompt on /dev/tty so it still works if stdin is redirected.
+  # Read from /dev/tty when available to avoid piping issues
   if [ -t 0 ] && [ -r /dev/tty ]; then
     printf "\nDo you agree to the license terms above? [y/N]: " > /dev/tty
     read -r REPLY < /dev/tty || REPLY=""
@@ -85,55 +90,36 @@ else
     read -r REPLY || REPLY=""
   fi
 
+  # Accept only y/yes (case-insensitive)
   case "$REPLY" in
-    [yY]|[yY][eE][sS]) echo "Agreed." ;;   # proceed
+    [yY]|[yY][eE][sS]) echo "Agreed." ;;
     *)                 echo "Not agreed."; exit 1 ;;
   esac
 fi
 
-# Function to check and add directory to PATH in a given file
+# Append PATH export to a shell init file if $DIR is not already present
 check_and_add_to_file() {
   local file=$1
-  [ -n "$file" ] || { echo "target file required" >&2; return 2; }
-  [ -n "$DIR" ]  || { echo "DIR is not set" >&2; return 2; }
-
-  local marker="# PATHHELPER: $DIR"
-
-  # If we've already managed this dir in this file, do nothing
-  if grep -Fqx "$marker" "$file" 2>/dev/null; then
-    echo "$DIR is already managed in $file"
-    return 0
+  # Detect an existing PATH entry referencing $DIR; otherwise append one
+  if grep -q "export PATH=.*$DIR" "$file"; then
+    echo "$DIR is already in the PATH in $file"
+  else
+    echo "Adding $DIR to $file"
+    echo "export PATH=\"$DIR:\$PATH\"" >> "$file"
   fi
-
-  # Ensure the file exists (no-op if it already does)
-  : > "$file"
-
-  {
-    echo "$marker"
-    echo "if [ -d \"$DIR\" ]; then"
-    echo "  case \":\$PATH:\" in"
-    echo "    *\":$DIR:\"*) ;;"
-    echo "    *) PATH=\"$DIR:\$PATH\" ;;"
-    echo "  esac"
-    echo "  export PATH"
-    echo "fi"
-    echo "# END $marker"
-  } >> "$file"
-
-  echo "Added $DIR to $file"
 }
 
-# Make install directory if it exists
+# Create the target directory if missing
 makedir() {
-  # Check if the directory exists, create if not
   if [ ! -d "$DIR" ]; then
     echo "$DIR does not exist. Creating directory..."
     mkdir -p "$DIR"
   fi
 }
 
-# Remove old version(s) if they exist
+# Remove older installs in $DIR and optionally from /usr/bin
 removeold() {
+  # Delete any previous local copies quietly
   for name in "$DIR/prettysleep" "$DIR/prettysleep.sh"; do
     if [ -f "$name" ]; then
       echo "Removing old version $name"
@@ -141,6 +127,7 @@ removeold() {
     fi
   done
 
+  # Offer to remove system-wide copies (requires sudo)
   for name in /usr/bin/prettysleep /usr/bin/prettysleep.sh; do
     if [ -f "$name" ]; then
       printf "Found old system-wide install at %s. Remove it? [y/N]: " "$name"
@@ -153,13 +140,14 @@ removeold() {
   done
 }
 
-# Install latest version
+# Download latest script and verify basic integrity
 installlatest() {
   local url="https://github.com/NanashiTheNameless/prettysleep/raw/refs/heads/main/prettysleep.sh"
   local target="$DIR/prettysleep"
 
   echo "Downloading $url → $target"
 
+  # Prefer axel, then curl, then wget
   if command -v axel >/dev/null 2>&1; then
     axel -q -o "$target" "$url"
   elif command -v curl >/dev/null 2>&1; then
@@ -171,7 +159,7 @@ installlatest() {
     exit 1
   fi
 
-  # Verify download: non-empty and plausible script (bash shebang)
+  # Verify file is non-empty and starts with a bash shebang
   if ! [ -s "$target" ]; then
     echo "Download failed or empty file: $target" >&2
     exit 1
@@ -182,8 +170,8 @@ installlatest() {
   fi
 }
 
+# Ensure the installed script is executable; escalate if needed
 makeexecutable() {
-  # Make latest version runable
   if [ ! -x "$DIR/prettysleep" ]; then
     echo "$DIR/prettysleep is not executable. Attempting to add execute permission."
     chmod +x "$DIR/prettysleep"
@@ -207,29 +195,17 @@ makeexecutable() {
   fi
 }
 
-# Handle the Implementation of PATH
+# Add $DIR to PATH in .zshrc and .bashrc when those files exist
 handlepath() {
-  # Check and modify .zshrc
-  [ -f "$HOME/.zshrc" ] && check_and_add_to_file "$HOME/.zshrc"
-
-  # Check and modify .bashrc
+  [ -f "$HOME/.zshrc" ]  && check_and_add_to_file "$HOME/.zshrc"
   [ -f "$HOME/.bashrc" ] && check_and_add_to_file "$HOME/.bashrc"
 }
 
-# Check if the directory exists, create if not
+# Execute installation steps in order
 makedir
-
-# Delete old version
 removeold
-
-# Install latest version
 installlatest
-
-# Make it executable
 makeexecutable
-
-# Handle the Implementation of PATH
 handlepath
 
-# Announce completion
 echo "Installation complete!"
