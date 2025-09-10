@@ -1,9 +1,4 @@
 #!/usr/bin/env bash
-# Prettysleep installer
-# - Installs to $HOME/.local/bin (override via DIR)
-# - Requires accepting OQL v1.2 (or pass --agree)
-# - Removes older installs, downloads latest, sets execute bit
-# - Ensures $DIR is added to PATH in common shell init files
 
 # Installation target directory
 DIR="$HOME/.local/bin"
@@ -211,4 +206,5 @@ installlatest
 makeexecutable
 handlepath
 
+# Announce completion
 echo "Installation complete!"
