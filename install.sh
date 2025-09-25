@@ -118,7 +118,7 @@ makedir() {
 # Remove older installs in $DIR and optionally from /usr/bin
 removeold() {
   # Delete any previous local copies quietly
-  for name in "$DIR/prettysleep" "$DIR/prettysleep.sh"; do
+  for name in "$target" "$target.sh"; do
     if [ -f "$name" ]; then
       echo "Removing old version $name"
       command rm -f -- "$name"
@@ -141,7 +141,7 @@ removeold() {
 # Download latest script and verify basic integrity
 installlatest() {
   local url="https://github.com/NanashiTheNameless/prettysleep/raw/refs/heads/main/prettysleep.sh"
-  local target="$DIR/prettysleep"
+  local target="$target"
 
   echo "Downloading $url → $target"
 
@@ -170,26 +170,26 @@ installlatest() {
 
 # Ensure the installed script is executable; escalate if needed
 makeexecutable() {
-  if [ ! -x "$DIR/prettysleep" ]; then
-    echo "$DIR/prettysleep is not executable. Attempting to add execute permission."
-    chmod +x "$DIR/prettysleep"
-    if [ ! -x "$DIR/prettysleep" ]; then
-      echo "$DIR/prettysleep is not executable after trying to add permissions, now trying with sudo."
-      sudo chmod +x "$DIR/prettysleep"
-      if [ ! -x "$DIR/prettysleep" ]; then
-        echo "$DIR/prettysleep is still not executable after trying to add permissions with sudo. Something is very wrong, This likely needs to be fixed manually!"
-        echo "Try running \"sudo chmod +x $DIR/prettysleep\" or \"chmod +x $DIR/prettysleep\" as root"
+  if [ ! -x "$target" ]; then
+    echo "$target is not executable. Attempting to add execute permission."
+    chmod +x "$target"
+    if [ ! -x "$target" ]; then
+      echo "$target is not executable after trying to add permissions, now trying with sudo."
+      sudo chmod +x "$target"
+      if [ ! -x "$target" ]; then
+        echo "$target is still not executable after trying to add permissions with sudo. Something is very wrong, This likely needs to be fixed manually!"
+        echo "Try running \"sudo chmod +x $target\" or \"chmod +x $target\" as root"
         echo "(prettysleep will still be added to your \$PATH variable)"
         handlepath
         exit 1
       else
-        echo "$DIR/prettysleep is now executable."
+        echo "$target is now executable."
       fi
     else
-      echo "$DIR/prettysleep is now executable."
+      echo "$target is now executable."
     fi
   else
-    echo "$DIR/prettysleep is already executable."
+    echo "$target is already executable."
   fi
 }
 
