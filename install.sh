@@ -91,6 +91,11 @@ else
   esac
 fi
 
+# Installation target info
+local url="https://github.com/NanashiTheNameless/prettysleep/raw/refs/heads/main/prettysleep.sh"
+local DIR="$HOME/.local/bin"
+local target="$DIR/prettysleep"
+
 # Append PATH export to a shell init file if $DIR is not already present
 check_and_add_to_file() {
   local file=$1
@@ -125,10 +130,6 @@ removeold() {
 
 # Download latest script and verify basic integrity
 installlatest() {
-  # Installation target info
-  local url="https://github.com/NanashiTheNameless/prettysleep/raw/refs/heads/main/prettysleep.sh"
-  local DIR="$HOME/.local/bin"
-  local target="$DIR/prettysleep"
 
   echo "Downloading $url → $target"
 
