@@ -92,9 +92,9 @@ else
 fi
 
 # Installation target info
-local url="https://github.com/NanashiTheNameless/prettysleep/raw/refs/heads/main/prettysleep.sh"
-local DIR="$HOME/.local/bin"
-local target="$DIR/prettysleep"
+url="https://github.com/NanashiTheNameless/prettysleep/raw/refs/heads/main/prettysleep.sh"
+DIR="$HOME/.local/bin"
+target="$DIR/prettysleep"
 
 # Append PATH export to a shell init file if $DIR is not already present
 check_and_add_to_file() {
