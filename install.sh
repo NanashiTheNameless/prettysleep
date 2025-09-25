@@ -121,18 +121,6 @@ removeold() {
       command rm -f -- "$name"
     fi
   done
-
-  # Offer to remove system-wide copies (requires sudo)
-  for name in /usr/bin/prettysleep /usr/bin/prettysleep.sh; do
-    if [ -f "$name" ]; then
-      printf "Found old system-wide install at %s. Remove it? [y/N]: " "$name"
-      read -r REPLY
-      case "$REPLY" in
-        [yY]|[yY][eE][sS]) sudo rm -f -- "$name" ;;
-        *) echo "Keeping $name" ;;
-      esac
-    fi
-  done
 }
 
 # Download latest script and verify basic integrity
