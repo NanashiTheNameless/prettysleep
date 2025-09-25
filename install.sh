@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# Installation target directory
-DIR="$HOME/.local/bin"
-
 # Parse flags (only --agree or --accept are recognized)
 AGREE_FLAG=0
 for __arg in "$@"; do
@@ -140,8 +137,10 @@ removeold() {
 
 # Download latest script and verify basic integrity
 installlatest() {
+  # Installation target info
   local url="https://github.com/NanashiTheNameless/prettysleep/raw/refs/heads/main/prettysleep.sh"
-  local target="$target"
+  local DIR="$HOME/.local/bin"
+  local target="$DIR/prettysleep"
 
   echo "Downloading $url → $target"
 
