@@ -107,7 +107,7 @@ done
 for arg in "$@"; do
   if [ "$arg" == "--update" ]; then
     update="true"
-    TEMPD=$(mktemp -d)
+    TEMPD="$(mktemp -d)"
     target="$TEMPD/install.sh"
     url="https://github.com/NanashiTheNameless/prettysleep/raw/refs/heads/main/install.sh"
     echo "Successfully created the temporary directory \"$TEMPD\"!"
@@ -123,7 +123,7 @@ for arg in "$@"; do
       echo "Need one of: axel, curl, or wget." >&2
       if [ -n "$TEMPD" ]; then
         if [ "$(uname)" = "Darwin" ]; then
-          echo "macOS detected — bypassing /tmp/ safety restriction because macOS is dumb."
+          echo "macOS detected — bypassing /tmp/ safety restriction because macOS is stupid."
           if command rm -rf "$TEMPD"; then
             echo "Cleaned up temporary directory \"$TEMPD\" successfully!"
           fi
@@ -133,10 +133,10 @@ for arg in "$@"; do
               if command rm -rf "$TEMPD"; then
                 echo "Cleaned up temporary directory \"$TEMPD\" successfully!"
               fi
-              ;;
+            ;;
             *)
               echo "Warning: TEMPD=\"$TEMPD\" is outside /tmp/, refusing to delete for safety."
-              ;;
+            ;;
           esac
         fi
       fi
@@ -151,7 +151,7 @@ for arg in "$@"; do
 
     if [ -n "$TEMPD" ]; then
       if [ "$(uname)" = "Darwin" ]; then
-        echo "macOS detected — bypassing /tmp/ safety restriction."
+        echo "macOS detected — bypassing /tmp/ safety restriction because macOS is stupid."
         if command rm -rf "$TEMPD"; then
           echo "Cleaned up temporary directory \"$TEMPD\" successfully!"
         fi
@@ -161,10 +161,10 @@ for arg in "$@"; do
             if command rm -rf "$TEMPD"; then
               echo "Cleaned up temporary directory \"$TEMPD\" successfully!"
             fi
-            ;;
+          ;;
           *)
             echo "Warning: TEMPD=\"$TEMPD\" is outside /tmp/, refusing to delete for safety."
-            ;;
+          ;;
         esac
       fi
     fi
