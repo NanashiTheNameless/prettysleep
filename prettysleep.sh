@@ -107,73 +107,7 @@ done
 for arg in "$@"; do
   if [ "$arg" == "--update" ]; then
     update="true"
-    TEMPD="$(mktemp -d)"
-    target="$TEMPD/install.sh"
-    url="https://github.com/NanashiTheNameless/prettysleep/raw/refs/heads/main/install.sh"
-    echo "Successfully created the temporary directory \"$TEMPD\"!"
-
-    # Prefer axel, then curl, then wget
-    if command -v axel >/dev/null 2>&1; then
-      axel -H 'DNT: 1' -H 'Sec-GPC: 1' -q -o "$target" "$url"
-    elif command -v curl >/dev/null 2>&1; then
-      curl -H 'DNT: 1' -H 'Sec-GPC: 1' -fsSL -o "$target" "$url"
-    elif command -v wget >/dev/null 2>&1; then
-      wget -H 'DNT: 1' -H 'Sec-GPC: 1' -q -O "$target" "$url"
-    else
-      echo "Need one of: axel, curl, or wget." >&2
-      if [ -n "$TEMPD" ]; then
-        if [ "$(uname)" = "Darwin" ]; then
-          echo "macOS detected — bypassing /tmp/ safety restriction because macOS is stupid."
-          if command rm -rf "$TEMPD"; then
-            echo "Cleaned up temporary directory \"$TEMPD\" successfully!"
-          fi
-        else
-          case "$TEMPD" in
-            /tmp/*)
-              if command rm -rf "$TEMPD"; then
-                echo "Cleaned up temporary directory \"$TEMPD\" successfully!"
-              fi
-            ;;
-            *)
-              echo "Warning: TEMPD=\"$TEMPD\" is outside /tmp/, refusing to delete for safety."
-            ;;
-          esac
-        fi
-      fi
-      if [ -e "$TEMPD" ]; then
-        echo "Temp Directory \"$TEMPD\" was not deleted correctly; you need to manually remove it!"
-      fi
-      exit 1
-    fi
-
-    chmod +x "$TEMPD/install.sh"
-    bash "$TEMPD/install.sh" --agree
-
-    if [ -n "$TEMPD" ]; then
-      if [ "$(uname)" = "Darwin" ]; then
-        echo "macOS detected — bypassing /tmp/ safety restriction because macOS is stupid."
-        if command rm -rf "$TEMPD"; then
-          echo "Cleaned up temporary directory \"$TEMPD\" successfully!"
-        fi
-      else
-        case "$TEMPD" in
-          /tmp/*)
-            if command rm -rf "$TEMPD"; then
-              echo "Cleaned up temporary directory \"$TEMPD\" successfully!"
-            fi
-          ;;
-          *)
-            echo "Warning: TEMPD=\"$TEMPD\" is outside /tmp/, refusing to delete for safety."
-          ;;
-        esac
-      fi
-    fi
-
-    if [ -e "$TEMPD" ]; then
-      echo "Temp Directory \"$TEMPD\" was not deleted correctly; you need to manually remove it!"
-    fi
-
-    break
+    bash <(curl -H 'DNT: 1' -H 'Sec-GPC: 1' -fsSL https://github.com/NanashiTheNameless/prettysleep/raw/refs/heads/main/install.sh) --agree
   fi
 done
 
